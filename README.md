@@ -1,4 +1,4 @@
-# chessPuzzles
+# angularTest
 
 Personal project.
 
@@ -11,7 +11,7 @@ The site never writes to any external service's servers; it only links out.
 
 ## Live site
 
-**https://bcat13.github.io/chessPuzzles/** — password-protected. Data refreshes daily at ~6am Central via GitHub Actions.
+**https://bcat13.github.io/angularTest/** — password-protected. Data refreshes daily at ~6am Central via GitHub Actions.
 
 ## Operating it
 
