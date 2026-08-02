@@ -1,0 +1,19 @@
+# Personal materials — repo is public, these must never be committed
+materials/
+
+# Secrets
+.env
+*.key
+
+# Build/deps
+node_modules/
+site/dist/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local pipeline scratch (raw fetches)
+pipeline/.cache*
+pipeline/refdata/airports_raw.csv
+pipeline/refdata/HD2023.csv
+pipeline/refdata/HD2023.zip

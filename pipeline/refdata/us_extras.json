@@ -1,0 +1,18 @@
+[
+{"name": "Simons Laufer Mathematical Sciences Institute (formerly MSRI)", "city": "Berkeley", "state": "CA", "lat": 37.8797, "lon": -122.2461, "class": "research_institute"},
+{"name": "Simons Foundation/Flatiron Institute", "city": "New York", "state": "NY", "lat": 40.7440, "lon": -73.9903, "class": "research_institute"},
+{"name": "Institute for Advanced Study", "city": "Princeton", "state": "NJ", "lat": 40.3316, "lon": -74.6672, "class": "research_institute"},
+{"name": "Institute for Computational and Experimental Research in Mathematics (ICERM)", "city": "Providence", "state": "RI", "lat": 41.8268, "lon": -71.4025, "class": "research_institute"},
+{"name": "Institute for Pure and Applied Mathematics (IPAM)", "city": "Los Angeles", "state": "CA", "lat": 34.0689, "lon": -118.4452, "class": "research_institute"},
+{"name": "American Institute of Mathematics", "city": "Pasadena", "state": "CA", "lat": 34.1377, "lon": -118.1253, "class": "research_institute"},
+{"name": "Institute for Defense Analyses", "city": "Alexandria", "state": "VA", "lat": 38.8048, "lon": -77.0469, "class": "research_institute"},
+{"name": "Center for Communications Research", "city": "Princeton", "state": "NJ", "lat": 40.3573, "lon": -74.6672, "class": "research_institute"},
+{"name": "Lawrence Berkeley National Laboratory", "city": "Berkeley", "state": "CA", "lat": 37.8756, "lon": -122.2508, "class": "national_lab"},
+{"name": "Sandia National Laboratories", "city": "Albuquerque", "state": "NM", "lat": 35.0606, "lon": -106.5372, "class": "national_lab"},
+{"name": "Los Alamos National Laboratory", "city": "Los Alamos", "state": "NM", "lat": 35.8440, "lon": -106.2857, "class": "national_lab"},
+{"name": "Oak Ridge National Laboratory", "city": "Oak Ridge", "state": "TN", "lat": 35.9310, "lon": -84.3100, "class": "national_lab"},
+{"name": "Pacific Northwest National Laboratory", "city": "Richland", "state": "WA", "lat": 46.3456, "lon": -119.2782, "class": "national_lab"},
+{"name": "Argonne National Laboratory", "city": "Lemont", "state": "IL", "lat": 41.7183, "lon": -87.9786, "class": "national_lab"},
+{"name": "US Coast Guard Academy", "city": "New London", "state": "CT", "lat": 41.3720, "lon": -72.1017, "class": "other"},
+{"name": "Air Force Institute of Technology", "city": "Dayton", "state": "OH", "lat": 39.7822, "lon": -84.0833, "class": "other"}
+]
