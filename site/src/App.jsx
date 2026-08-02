@@ -28,6 +28,7 @@ const DEFAULT_FILTERS = {
   types: ['postdoc', 'tenure_track'],
   classes: [],
   airport: 'ok', // ok | any
+  subfield: 'ok', // ok (combinatorics/open-field only) | any
   country: 'all',
   newOnly: false,
   hidePast: true,
@@ -141,6 +142,7 @@ function Main({ keyBytes, onLock }) {
       if (filters.types.length && !filters.types.includes(j.position_type)) return false
       if (filters.classes.length && !filters.classes.includes(j.inst_class)) return false
       if (filters.airport === 'ok' && j.airport_ok !== true) return false
+      if (filters.subfield === 'ok' && j.subfield_ok === false) return false
       if (filters.country !== 'all' && j.country !== filters.country) return false
       if (filters.newOnly && j.first_seen < weekAgo) return false
       if (filters.hidePast && j.deadline && j.deadline < today) return false
@@ -229,6 +231,7 @@ function Filters({ filters, setFilters, shownCount }) {
       <div className="filter-row">
         <span className="filter-label">More</span>
         <Chip active={f.airport === 'ok'} onClick={() => set({ airport: f.airport === 'ok' ? 'any' : 'ok' })}>✈️ ≤55 mi of airport</Chip>
+        <Chip active={f.subfield === 'ok'} onClick={() => set({ subfield: f.subfield === 'ok' ? 'any' : 'ok' })}>🎯 Combinatorics / open-field</Chip>
         <Chip active={f.country === 'US'} onClick={() => set({ country: f.country === 'US' ? 'all' : 'US' })}>🇺🇸 US</Chip>
         <Chip active={f.country === 'CA'} onClick={() => set({ country: f.country === 'CA' ? 'all' : 'CA' })}>🇨🇦 Canada</Chip>
         <Chip active={f.newOnly} onClick={() => set({ newOnly: !f.newOnly })}>🆕 New this week</Chip>
@@ -277,6 +280,8 @@ function JobCard({ job, status, kit, onOpen, today, weekAgo }) {
             {TYPE_LABELS[job.position_type]}
           </span>
           <span className={`badge ${job.liberal_arts ? 'teal' : 'gray'}`}>{CLASS_LABELS[job.inst_class]}</span>
+          {job.subfield === 'combinatorics' && <span className="badge green">combinatorics</span>}
+          {job.subfield_ok === false && <span className="badge red">{job.subfield}</span>}
           <DeadlineBadge deadline={job.deadline} today={today} />
           {kit && <span className="badge gold">✍️ kit ready</span>}
           {status?.status && status.status !== 'none' && (
@@ -329,6 +334,9 @@ function JobDetail({ job, kitEntry, status, setStatus, onClose }) {
           <span className="badge indigo">{TYPE_LABELS[job.position_type]}</span>{' '}
           <span className={`badge ${job.liberal_arts ? 'teal' : 'gray'}`}>{CLASS_LABELS[job.inst_class]}</span>{' '}
           {job.deadline && <span className="badge amber">deadline {job.deadline}</span>}{' '}
+          {job.subfield && job.subfield !== 'general' && (
+            <span className={`badge ${job.subfield_ok ? 'green' : 'red'}`}>{job.subfield}</span>
+          )}{' '}
           {job.subject && <span className="badge gray">{job.subject}</span>}
         </p>
 

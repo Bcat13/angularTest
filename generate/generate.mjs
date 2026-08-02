@@ -30,7 +30,10 @@ const drafts = existsSync(outPath) ? JSON.parse(readFileSync(outPath, 'utf8')) :
 
 // Default: jobs matching Elise's filter that don't have a kit yet
 let targets = jobs.filter(
-  (j) => ['postdoc', 'tenure_track'].includes(j.position_type) && j.airport_ok
+  (j) =>
+    ['postdoc', 'tenure_track'].includes(j.position_type) &&
+    j.airport_ok &&
+    j.subfield_ok !== false
 )
 if (onlyIds.length) targets = jobs.filter((j) => onlyIds.includes(j.id))
 targets = targets.filter((j) => !drafts[j.id]).slice(0, limit)

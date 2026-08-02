@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from sources import mathjobs, ajo, cms, chronicle, universityaffairs
-from sources.common import classify_discipline
+from sources.common import classify_discipline, classify_subfield
 from enrich import Enricher
 
 ROOT = Path(__file__).parent.parent
@@ -48,6 +48,16 @@ def main():
         print(f"  - {j['institution'][:38]:40} {j['title'][:55]}")
     jobs = kept
 
+    # Subfield tagging: combinatorics or open-field math is "ok"; positions
+    # explicitly restricted to another subfield are tagged and hidden by the
+    # site's default filter (still viewable via a toggle — regex isn't perfect)
+    for j in jobs:
+        j["subfield"], j["subfield_ok"] = classify_subfield(j["title"], j.get("subject", ""))
+    other = [j for j in jobs if not j["subfield_ok"]]
+    print(f"subfield tagging: {len(other)} explicit other-subfield postings (hidden by default)")
+    for j in other[:8]:
+        print(f"  ~ {j['institution'][:32]:34} [{j['subfield']}] {j['title'][:45]}")
+
     # dedupe across sources by (institution, title), keep first (source order = priority)
     seen_keys = set()
     deduped = []
@@ -82,7 +92,7 @@ def main():
     n = len(deduped)
     match_default = [
         j for j in deduped
-        if j["position_type"] in ("postdoc", "tenure_track") and j["airport_ok"]
+        if j["position_type"] in ("postdoc", "tenure_track") and j["airport_ok"] and j["subfield_ok"]
     ]
     print(f"sources: {counts}")
     print(f"total US/CA jobs: {n} | new this run: {len(new_jobs)}")
