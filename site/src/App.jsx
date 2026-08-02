@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { deriveKeyBytes, verifierOf, decryptBundle, bytesToB64, b64ToBytes } from './crypto.js'
 
 const DATA = (path) => `${import.meta.env.BASE_URL}data/${path}`
@@ -311,11 +311,19 @@ function CopyBtn({ text, label = 'Copy' }) {
 }
 
 function JobDetail({ job, kitEntry, status, setStatus, onClose }) {
+  const notesTimer = useRef(null)
   useEffect(() => {
     const onKeyDown = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [onClose])
+
+  // save notes as the user types (debounced) — blur-only saving loses the
+  // note if the page is refreshed while the textarea still has focus
+  function saveNotes(value) {
+    clearTimeout(notesTimer.current)
+    notesTimer.current = setTimeout(() => setStatus({ notes: value }), 300)
+  }
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -360,8 +368,9 @@ function JobDetail({ job, kitEntry, status, setStatus, onClose }) {
 
         <textarea
           className="notes"
-          placeholder="Your notes on this job…"
+          placeholder="Your notes on this job… (saved automatically)"
           defaultValue={status?.notes || ''}
+          onChange={(e) => saveNotes(e.target.value)}
           onBlur={(e) => setStatus({ notes: e.target.value })}
         />
 

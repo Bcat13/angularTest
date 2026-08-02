@@ -16,7 +16,7 @@ const profilePath = join(here, '..', 'materials', 'elise_profile.md')
 const systemPath = join(here, 'prompts', 'system.md')
 const outPath = join(here, 'output', 'drafts.json')
 
-const MODEL = 'claude-opus-5'
+const MODEL = 'claude-sonnet-5'
 
 const args = process.argv.slice(2)
 const limitIdx = args.indexOf('--limit')
@@ -81,30 +81,37 @@ function parseSections(text) {
   return out
 }
 
+const CONCURRENCY = 5
 let done = 0
-for (const job of targets) {
-  try {
-    const stream = client.messages.stream({
-      model: MODEL,
-      max_tokens: 16000,
-      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userPrompt(job) }],
-    })
-    const message = await stream.finalMessage()
-    if (message.stop_reason === 'refusal') {
-      console.warn(`  refused: ${job.id}`)
-      continue
+const queue = [...targets]
+mkdirSync(dirname(outPath), { recursive: true })
+
+async function worker() {
+  for (let job = queue.shift(); job; job = queue.shift()) {
+    try {
+      const stream = client.messages.stream({
+        model: MODEL,
+        max_tokens: 16000,
+        system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+        messages: [{ role: 'user', content: userPrompt(job) }],
+      })
+      const message = await stream.finalMessage()
+      if (message.stop_reason === 'refusal') {
+        console.warn(`  refused: ${job.id}`)
+        continue
+      }
+      const text = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n')
+      drafts[job.id] = parseSections(text)
+      done++
+      console.log(`  ✓ ${job.institution} — ${job.title} (${done}/${targets.length})`)
+      writeFileSync(outPath, JSON.stringify(drafts, null, 1))
+    } catch (err) {
+      console.error(`  ✗ ${job.id}: ${err.message}`)
     }
-    const text = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n')
-    drafts[job.id] = parseSections(text)
-    done++
-    console.log(`  ✓ ${job.institution} — ${job.title} (${done}/${targets.length})`)
-    mkdirSync(dirname(outPath), { recursive: true })
-    writeFileSync(outPath, JSON.stringify(drafts, null, 1))
-  } catch (err) {
-    console.error(`  ✗ ${job.id}: ${err.message}`)
   }
 }
+
+await Promise.all(Array.from({ length: CONCURRENCY }, worker))
 
 console.log(`\nDone. ${done} kits written to ${outPath}`)
 console.log(`Next: cd ../site && PASSWORD='<site password>' npm run encrypt`)
