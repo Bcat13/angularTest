@@ -17,3 +17,6 @@ pipeline/.cache*
 pipeline/refdata/airports_raw.csv
 pipeline/refdata/HD2023.csv
 pipeline/refdata/HD2023.zip
+
+# Unencrypted drafts — only the encrypted kit.enc is committed
+generate/output/
