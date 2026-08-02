@@ -75,7 +75,7 @@ function Login({ onKey }) {
     <div className="login-wrap">
       <form className="login-card" onSubmit={submit}>
         <div className="login-logo">∑</div>
-        <h1>Elise&rsquo;s Job Finder</h1>
+        <h1>Job Finder</h1>
         <p className="muted">Academic math positions, filtered for you.</p>
         <input
           type="password"
@@ -168,7 +168,7 @@ function Main({ keyBytes, onLock }) {
     <div className="layout">
       <header className="topbar">
         <div>
-          <strong>∑ Elise&rsquo;s Job Finder</strong>
+          <strong>∑ Job Finder</strong>
           <span className="muted sml"> · {jobs.length} jobs · updated {generated}</span>
         </div>
         <div className="topbar-actions">
@@ -390,7 +390,7 @@ function JobDetail({ job, kitEntry, status, setStatus, onClose }) {
         ) : (
           <div className="kit">
             <h4>✍️ Application kit</h4>
-            <p className="muted sml">No pre-generated draft for this job yet. Ask Ben to run the generator, or copy the job description below into Claude with Elise&rsquo;s materials.</p>
+            <p className="muted sml">No pre-generated draft for this job yet. Run the generator to create one, or copy the job description below into Claude along with your materials.</p>
           </div>
         )}
 

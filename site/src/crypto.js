@@ -1,6 +1,6 @@
 // Password → AES-GCM key via PBKDF2. The personal application-kit bundle is
 // genuinely encrypted (repo + Pages are public), so the password wall is real
-// protection for Elise's drafts, not just a UI gate.
+// protection for the personal drafts, not just a UI gate.
 
 const ITERATIONS = 310000
 

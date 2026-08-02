@@ -1,41 +1,38 @@
-# Elise Job Finder
+# chessPuzzles
 
-Academic math job tracker + application kit for Elise Catania (algebraic combinatorics).
+Personal project.
 
-- **pipeline/** — Python scraper: job boards → normalize → enrich (airport distance, liberal-arts classification) → `site/public/data/jobs.json`
+- **pipeline/** — Python data pipeline → `site/public/data/jobs.json`
 - **site/** — Vite + React SPA, deployed to GitHub Pages, password-protected (AES-GCM encrypted personal content)
-- **generate/** — Claude API script that pre-drafts per-job application materials (run locally only)
-- **materials/** — Elise's CV and statements. **Gitignored — never commit.**
+- **generate/** — drafting script (run locally only)
+- **materials/** — personal documents. **Gitignored — never commit.**
 
-The site never writes to any job board's servers; it only links out to real application pages.
+The site never writes to any external service's servers; it only links out.
 
 ## Live site
 
-**https://bcat13.github.io/elise-job-finder/** — password-protected. Data refreshes daily at ~6am Central via GitHub Actions.
+**https://bcat13.github.io/chessPuzzles/** — password-protected. Data refreshes daily at ~6am Central via GitHub Actions.
 
 ## Operating it
 
-**Change the password** (current temp password is `elise-changeme`):
+**Change the password**:
 ```sh
 cd site && PASSWORD='new-password' npm run encrypt
-git commit -am "rotate password" && git push
+git commit -am "rotate" && git push
 ```
-Note: changing the password re-encrypts the application kits, so run this *after* any draft generation, with the same password Elise will use.
+Note: changing the password re-encrypts the drafts bundle, so run this *after* any draft generation, with the same password the user will use.
 
-**Generate application kits** (needs `ANTHROPIC_API_KEY` set):
+**Generate drafts** (needs `ANTHROPIC_API_KEY` set):
 ```sh
 cd generate && npm install && node generate.mjs --limit 10   # or no limit for all matches
 cd ../site && PASSWORD='the-password' npm run encrypt
 git add public/data && git commit -m "update kits" && git push
 ```
 
-**Run the scraper manually**: `python3 pipeline/run.py` locally, or trigger the
+**Run the pipeline manually**: `python3 pipeline/run.py` locally, or trigger the
 "Daily scrape and deploy" workflow from the GitHub Actions tab.
 
-**Sources**: MathJobs.org (official JSON feed), AcademicJobsOnline, Canadian
-Mathematical Society, Chronicle of Higher Education (math RSS), University
-Affairs. AMS EIMS shut down in 2019.
-
 ## TODO
-- Feed in Elise's research + teaching statements (`materials/`) and tighten the tone-matching in `generate/prompts/system.md`.
-- Email alerts when new jobs match her filter (extend the Actions workflow).
+- Feed additional statements into `materials/` and tighten tone-matching in `generate/prompts/system.md`.
+- Email alerts for new matches (extend the Actions workflow).
+- Optional cross-device sync backend for tracker data.
