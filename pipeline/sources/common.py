@@ -89,6 +89,9 @@ SUBFIELDS = [
     ("cryptography", re.compile(r"cryptograph", re.I)),
     ("representation theory", re.compile(r"representation theor|th[ée]orie des repr[ée]sentations", re.I)),
     ("algebra", re.compile(r"\balgebra|\balg[èe]bre", re.I)),
+    # "Mathematics of/for Data Science" is domain-restricted, but the joint-hire
+    # phrasing "Mathematics and Data Science" names math as a coordinate field
+    ("data science / AI", re.compile(r"(?<!mathematics and )data science|machine learning|\bAI\b|artificial intelligence", re.I)),
     ("mathematics education", re.compile(r"math(ematics)? education", re.I)),
     ("financial mathematics", re.compile(r"financial math|mathematical finance", re.I)),
 ]
