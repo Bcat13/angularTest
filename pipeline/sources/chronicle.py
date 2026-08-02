@@ -51,7 +51,7 @@ def fetch():
                 "close_date": None,
                 "url": link,
                 "apply_url": link,
-                "subject": "Mathematics",
+                "subject": "",
                 "description": desc,
             }
         )

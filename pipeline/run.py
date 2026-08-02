@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from sources import mathjobs, ajo, cms, chronicle, universityaffairs
+from sources.common import classify_discipline
 from enrich import Enricher
 
 ROOT = Path(__file__).parent.parent
@@ -32,6 +33,20 @@ def main():
             fetched = []
         counts[name] = len(fetched)
         jobs.extend(fetched)
+
+    # Mathematics only — drop statistics/CS/data-science/actuarial postings,
+    # even from joint departments. Titles naming mathematics are kept.
+    kept = []
+    dropped = []
+    for j in jobs:
+        j["discipline"] = classify_discipline(
+            j["title"], j.get("subject", ""), j.get("department", ""), j.get("description", "")
+        )
+        (dropped if j["discipline"] == "non_math" else kept).append(j)
+    print(f"discipline filter: dropped {len(dropped)} non-math postings")
+    for j in dropped[:8]:
+        print(f"  - {j['institution'][:38]:40} {j['title'][:55]}")
+    jobs = kept
 
     # dedupe across sources by (institution, title), keep first (source order = priority)
     seen_keys = set()
