@@ -9,22 +9,28 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from sources import mathjobs
+from sources import mathjobs, ajo, cms, chronicle, universityaffairs
 from enrich import Enricher
 
 ROOT = Path(__file__).parent.parent
 STATE = Path(__file__).parent / "state" / "seen.json"
 OUT = ROOT / "site" / "public" / "data" / "jobs.json"
 
-SOURCES = [mathjobs]
+# order = dedupe priority: MathJobs records are richest, keep them first
+SOURCES = [mathjobs, ajo, cms, chronicle, universityaffairs]
 
 
 def main():
     jobs = []
     counts = {}
     for src in SOURCES:
-        fetched = src.fetch()
-        counts[src.__name__.split(".")[-1]] = len(fetched)
+        name = src.__name__.split(".")[-1]
+        try:
+            fetched = src.fetch()
+        except Exception as e:  # one broken board must not kill the daily run
+            print(f"WARNING: source {name} failed: {e}")
+            fetched = []
+        counts[name] = len(fetched)
         jobs.extend(fetched)
 
     # dedupe across sources by (institution, title), keep first (source order = priority)

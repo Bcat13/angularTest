@@ -47,7 +47,10 @@ C21_LABELS = {
 
 
 def _norm(name):
-    s = name.lower()
+    import unicodedata
+    s = unicodedata.normalize("NFD", name)
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    s = s.lower()
     s = s.replace("&", "and").replace("’", "'")
     s = re.sub(r"\bthe\b", " ", s)
     s = re.sub(r"[^a-z0-9 ]", " ", s)
@@ -78,6 +81,16 @@ ALIASES = {
     "university of pittsburgh": "University of Pittsburgh-Pittsburgh Campus",
     "university of oklahoma": "University of Oklahoma-Norman Campus",
     "st olaf college": "St. Olaf College",
+    # Canadian name variants
+    "laval university": "Universite Laval",
+    "memorial university": "Memorial University of Newfoundland",
+    "university of quebec at montreal": "Universite du Quebec a Montreal",
+    "mcgill university montreal": "McGill University",
+    "university of toronto st george campus": "University of Toronto",
+    "university of toronto scarborough utsc": "University of Toronto Scarborough",
+    "university of toronto mississauga utm": "University of Toronto Mississauga",
+    "universite mcgill": "McGill University",
+    "universite laurentienne": "Laurentian University",
 }
 
 
@@ -135,6 +148,12 @@ class Enricher:
         country = job["country"]
         st = self.state_abbr(job.get("state", ""), country)
         inst, how = self.match_institution(job["institution"], country, job.get("city", ""), st)
+        # CMS doesn't publish a country field (we assume CA); US schools do post
+        # there, so fall back to the US table and correct the country
+        if inst is None and job["source"] == "cms":
+            inst, how = self.match_institution(job["institution"], "US", job.get("city", ""), "")
+            if inst is not None:
+                country = job["country"] = "US"
         lat = lon = None
         if inst:
             lat, lon = inst["lat"], inst["lon"]
