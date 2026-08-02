@@ -28,7 +28,7 @@ const systemPrompt = readFileSync(systemPath, 'utf8')
 const { jobs } = JSON.parse(readFileSync(jobsPath, 'utf8'))
 const drafts = existsSync(outPath) ? JSON.parse(readFileSync(outPath, 'utf8')) : {}
 
-// Default: jobs matching Elise's filter that don't have a kit yet
+// Default: jobs matching the default filter that don't have a kit yet
 let targets = jobs.filter(
   (j) =>
     ['postdoc', 'tenure_track'].includes(j.position_type) &&
@@ -43,7 +43,7 @@ const client = new Anthropic()
 
 function userPrompt(job) {
   const teachingFocused = job.liberal_arts || job.position_type === 'lecturer'
-  return `# Elise's profile
+  return `# Candidate profile
 
 ${profile}
 
@@ -64,8 +64,8 @@ ${(job.description || '(no description available — rely on title and instituti
 This is a ${teachingFocused ? 'teaching-focused' : 'research-focused'} application. Produce:
 
 1. **cover_letter** — a complete draft cover letter (350–500 words) tailored to this posting.
-2. **fit_talking_points** — 4–6 bullet points on why Elise fits THIS position specifically, usable in interviews or supplemental questions.
-3. **application_checklist** — the materials this posting asks for (from its text), each with a one-line note on what Elise should emphasize.
+2. **fit_talking_points** — 4–6 bullet points on why the candidate fits THIS position specifically, usable in interviews or supplemental questions.
+3. **application_checklist** — the materials this posting asks for (from its text), each with a one-line note on what the candidate should emphasize.
 
 Format the response as exactly three markdown sections with the headers "## cover_letter", "## fit_talking_points", "## application_checklist".`
 }
