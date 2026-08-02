@@ -10,7 +10,7 @@ import re
 import urllib.request
 
 FEED = "https://www.mathjobs.org/jobs/public_job_boards?limit=2000&page=1&all_postings=1"
-UA = "EliseJobFinder/1.0 (personal academic job tracker; contact: bcatania13@gmail.com)"
+UA = "JobBoardReader/1.0 (personal use; contact: bcatania13@gmail.com)"
 
 TAG_RE = re.compile(r"<[^>]+>")
 

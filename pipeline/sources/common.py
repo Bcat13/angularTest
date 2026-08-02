@@ -4,7 +4,7 @@ import html
 import re
 import urllib.request
 
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36 EliseJobFinder/1.0"
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36 JobBoardReader/1.0"
 
 TAG_RE = re.compile(r"<[^>]+>")
 
@@ -28,7 +28,7 @@ def strip_html(s):
 
 
 # Pure/applied mathematics indicators. Deliberately NOT statistics, CS, data
-# science, actuarial, or operations research — Elise only wants mathematics
+# science, actuarial, or operations research — mathematics positions only
 # positions, even when the hosting department is joint (Math & Stats etc.).
 MATH_KEYWORDS = re.compile(
     r"\bmath|algebra|combinat|geometr|topolog|number theory|analysis|"
@@ -65,7 +65,7 @@ def looks_mathy(text):
     return bool(MATH_KEYWORDS.search(_FALSE_MATH.sub("", text or "")))
 
 
-# --- Subfield rule (Elise): keep combinatorics or general/open-field math; ---
+# --- Subfield rule: keep combinatorics or general/open-field math; ---
 # --- drop positions explicitly restricted to a different subfield.          ---
 # Scanned on title + subject only: descriptions routinely enumerate a whole
 # department's research areas, which would misread a general call as narrow.

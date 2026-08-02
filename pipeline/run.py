@@ -96,7 +96,7 @@ def main():
     ]
     print(f"sources: {counts}")
     print(f"total US/CA jobs: {n} | new this run: {len(new_jobs)}")
-    print(f"matching Elise's default filter (postdoc/TT + airport OK): {len(match_default)}")
+    print(f"matching the default filter (postdoc/TT + airport OK): {len(match_default)}")
     print(f"liberal arts institutions: {sum(1 for j in deduped if j['liberal_arts'])}")
     unmatched = [j["institution"] for j in deduped if j.get("inst_match") is None and j["inst_class"] == "unknown" and j["airport_ok"] is None]
     if unmatched:
