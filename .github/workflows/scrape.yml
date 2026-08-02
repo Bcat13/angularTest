@@ -1,0 +1,63 @@
+name: Daily scrape and deploy
+
+on:
+  schedule:
+    - cron: "0 11 * * *" # daily ~6am Central
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run job pipeline
+        run: python3 pipeline/run.py
+
+      - name: Commit refreshed job data
+        run: |
+          git config user.name "job-finder-bot"
+          git config user.email "actions@github.com"
+          git add site/public/data/jobs.json pipeline/state/seen.json
+          git diff --cached --quiet || git commit -m "Daily job data refresh $(date -u +%F)"
+          git push
+        # push events also run this job; the diff check makes it a no-op then
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build site
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
